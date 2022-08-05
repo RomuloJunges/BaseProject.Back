@@ -1,8 +1,16 @@
+using BaseProject.CrossCutting.Dependecy;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Connection
+builder.Services.AddDbContext(builder.Configuration);
 
+// Add services to the container.
+builder.Services.AddAutoMapper();
 builder.Services.AddControllers();
+builder.Services.AddRepositories();
+builder.Services.AddServices();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
