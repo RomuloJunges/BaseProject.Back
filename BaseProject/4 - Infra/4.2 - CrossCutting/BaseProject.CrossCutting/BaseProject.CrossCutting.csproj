@@ -8,11 +8,16 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.7" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\2 - Domain\BaseProject.Domain\BaseProject.Domain.csproj" />
+    <ProjectReference Include="..\..\..\3 - Service\BaseProject.Service\BaseProject.Service.csproj" />
     <ProjectReference Include="..\..\4.1 - Data\BaseProject.Data\BaseProject.Data.csproj" />
   </ItemGroup>
 

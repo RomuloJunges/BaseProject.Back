@@ -36,10 +36,5 @@ namespace BaseProject.Data.Repository
         {
             return _context.Set<T>().ToList<T>();
         }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            return (await _context.SaveChangesAsync()) > 0;
-        }
     }
 }

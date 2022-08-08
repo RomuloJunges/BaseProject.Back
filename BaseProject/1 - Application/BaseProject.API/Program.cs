@@ -1,13 +1,30 @@
+using System.Text.Json.Serialization;
 using BaseProject.CrossCutting.Dependecy;
+using Microsoft.AspNetCore.Http.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using MvcJsonOptions = Microsoft.AspNetCore.Mvc.JsonOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Connection
 builder.Services.AddDbContext(builder.Configuration);
+builder.Services.AddIdentity(builder.Configuration);
 
 // Add services to the container.
 builder.Services.AddAutoMapper();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    })
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+        options.SerializerSettings.Converters.Add(new StringEnumConverter());
+    });
+
 builder.Services.AddRepositories();
 builder.Services.AddServices();
 
@@ -26,7 +43,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllers();
 
