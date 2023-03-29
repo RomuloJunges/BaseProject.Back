@@ -14,10 +14,15 @@ namespace BaseProject.Data.Repository
             _context = context;
         }
 
-        public async Task<User> GetById(Guid id) => await _context.Users.FindAsync(id);
+        public async Task<User> GetById(Guid id)
+        {
+            return await _context.Users.FindAsync(id);
+        }
 
-        public async Task<User> GetByEmail(string email) =>
-            await _context.Users
+        public async Task<User> GetByEmail(string email)
+        {
+            return await _context.Users
                 .SingleOrDefaultAsync(user => user.Email.ToLower() == email.ToLower());
+        }
     }
 }

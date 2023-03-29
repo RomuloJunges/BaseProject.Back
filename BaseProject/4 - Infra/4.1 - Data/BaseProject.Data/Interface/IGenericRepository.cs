@@ -8,7 +8,5 @@
         void DeleteRange<T>(T[] entity) where T : class;
         
         List<T> GetAll<T>() where T : class;
-        
-        Task<bool> SaveChangesAsync();
     }
 }
