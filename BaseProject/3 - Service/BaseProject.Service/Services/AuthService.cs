@@ -28,7 +28,11 @@ namespace BaseProject.Service.Services
             try
             {
                 var user = await _userService.GetByEmail(loginUserDto.Email);
-                if (user == null) return null;
+                if (user == null)
+                {
+                    AddNotification("User or password invalid");
+                    return null;
+                }
 
                 var result = await _userService.CheckUserPassword(loginUserDto);
                 if (!result.Succeeded)
@@ -36,6 +40,7 @@ namespace BaseProject.Service.Services
                     AddNotification("User or password invalid");
                     return null;
                 }
+
                 user.Token = await _tokenService.CreateToken(user);
 
                 return _mapper.Map<TokenUserDTO>(user);

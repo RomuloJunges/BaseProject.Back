@@ -6,6 +6,6 @@ namespace BaseProject.Data.Interface
     {
         IUserRepository User { get; }
 
-        Task Commit();
+        Task<int> Commit();
     }
 }

@@ -1,9 +1,14 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using BaseProject.Domain.Enum;
 
 namespace BaseProject.Domain.DTO.UserDTO
 {
-    public class UserDTO
+    public class UpdateUserDTO
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; }
@@ -12,8 +17,5 @@ namespace BaseProject.Domain.DTO.UserDTO
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public Status Status { get; set; }
-        public string Password { get; set; }
-        public string ConfirmPassword { get; set; }
-        public string Token { get; set; }
     }
 }

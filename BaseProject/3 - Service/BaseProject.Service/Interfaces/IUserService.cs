@@ -6,7 +6,7 @@ namespace BaseProject.Service.Interfaces
     public interface IUserService : INotificationService
     {
         Task<UserDTO> Add(CreateUserDTO userDto);
-        Task<UserDTO> Update(UserDTO userDto);
+        Task<UserDTO> Update(UpdateUserDTO userDto);
         Task<bool> Delete(Guid id);
         Task<List<UserDTO>> GetAll();
         Task<UserDTO> Get(Guid id);

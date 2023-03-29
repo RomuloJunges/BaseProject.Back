@@ -46,7 +46,7 @@ namespace BaseProject.Service.Services
             }
         }
 
-        public async Task<UserDTO> Update(UserDTO userDto)
+        public async Task<UserDTO> Update(UpdateUserDTO userDto)
         {
             try
             {
@@ -59,12 +59,12 @@ namespace BaseProject.Service.Services
 
                 _mapper.Map(userDto, user);
 
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var result = await _userManager.ResetPasswordAsync(user, token, userDto.Password);
-
                 _userRepository.Update<User>(user);
-                await _uow.Commit();
-                return _mapper.Map<UserDTO>(await _userRepository.GetById(userDto.Id));
+                if (await _uow.Commit() > 0)
+                    return _mapper.Map<UserDTO>(await _userRepository.GetById(userDto.Id));
+
+                AddNotification("Error on update user.");
+                return null;
             }
             catch (Exception ex)
             {
@@ -73,16 +73,25 @@ namespace BaseProject.Service.Services
             }
         }
 
-        public Task<bool> Delete(Guid id)
+        public async Task<bool> Delete(Guid id)
         {
             try
             {
-                return null;
+                var user = await _userRepository.GetById(id);
+                if (user == null)
+                {
+                    AddNotification("Error on delete user.");
+                    return false;
+                }
+                _userRepository.Delete<User>(user);
+                if (await _uow.Commit() > 0) return true;
+                return false;
+
             }
             catch (Exception ex)
             {
                 AddNotification("Error on delete user.");
-                return null;
+                return false;
             }
         }
 

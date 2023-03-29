@@ -15,9 +15,9 @@ namespace BaseProject.Data.Repository
             User = user;
         }
 
-        public async Task Commit()
+        public async Task<int> Commit()
         {
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
         public void Dispose()
         {
