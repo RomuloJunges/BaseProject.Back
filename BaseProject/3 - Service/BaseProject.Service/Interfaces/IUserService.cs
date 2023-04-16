@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BaseProject.Service.Interfaces
 {
-    public interface IUserService : INotificationService
+    public interface IUserService
     {
         Task<UserDTO> Add(CreateUserDTO userDto);
         Task<UserDTO> Update(UpdateUserDTO userDto);

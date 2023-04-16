@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BaseProject.Service.Services
 {
-    public class UserService : NotificationService, IUserService
+    public class UserService : IUserService
     {
         private readonly IUnitOfWork _uow;
         private readonly IUserRepository _userRepository;
@@ -34,15 +34,13 @@ namespace BaseProject.Service.Services
                 var user = _mapper.Map<User>(userDto);
                 user.UserName = user.FirstName;
                 var result = await _userManager.CreateAsync(user, userDto.Password);
-                if (result.Succeeded) return _mapper.Map<UserDTO>(user);
 
-                AddNotification("Error on create user.");
-                return null;
+                if (result.Succeeded) return _mapper.Map<UserDTO>(user);
+                throw new Exception("Error on create user.");
             }
             catch (Exception ex)
             {
-                AddNotification("Error on create user.");
-                return null;
+                throw new Exception("Error on create user. Message: " + ex.Message);
             }
         }
 
@@ -52,24 +50,20 @@ namespace BaseProject.Service.Services
             {
                 var user = await _userRepository.GetById(userDto.Id);
                 if (user == null)
-                {
-                    AddNotification("Error on update user.");
-                    return null;
-                }
+                    throw new Exception("Error on update user.");
 
                 _mapper.Map(userDto, user);
 
                 _userRepository.Update<User>(user);
+
                 if (await _uow.Commit() > 0)
                     return _mapper.Map<UserDTO>(await _userRepository.GetById(userDto.Id));
 
-                AddNotification("Error on update user.");
-                return null;
+                throw new Exception("Error on update user.");
             }
             catch (Exception ex)
             {
-                AddNotification("Error on update user.");
-                return null;
+                throw new Exception($"Error on update user. Message: {ex.Message}");
             }
         }
 
@@ -78,11 +72,9 @@ namespace BaseProject.Service.Services
             try
             {
                 var user = await _userRepository.GetById(id);
-                if (user == null)
-                {
-                    AddNotification("Error on delete user.");
-                    return false;
-                }
+                if (user == null) 
+                    throw new Exception("Error on delete user.");
+
                 _userRepository.Delete<User>(user);
                 if (await _uow.Commit() > 0) return true;
                 return false;
@@ -90,8 +82,7 @@ namespace BaseProject.Service.Services
             }
             catch (Exception ex)
             {
-                AddNotification("Error on delete user.");
-                return false;
+                throw new Exception("Error on delete user.");
             }
         }
 
@@ -104,8 +95,7 @@ namespace BaseProject.Service.Services
             }
             catch (Exception ex)
             {
-                AddNotification("Error on get all user.");
-                return null;
+                throw new Exception("Error on get all user.");
             }
         }
 
@@ -118,8 +108,7 @@ namespace BaseProject.Service.Services
             }
             catch (Exception ex)
             {
-                AddNotification("Error on get user.");
-                return null;
+                throw new Exception("Error on get user.");
             }
         }
 
@@ -128,18 +117,14 @@ namespace BaseProject.Service.Services
             try
             {
                 var user = await _userRepository.GetByEmail(email);
-                if (user == null)
-                {
-                    AddNotification("Error on get user.");
-                    return null;
-                }
+                if (user == null) 
+                    throw new Exception("Error on get user.");
 
                 return _mapper.Map<UserDTO>(user);
             }
             catch (Exception ex)
             {
-                AddNotification("Error on get user.");
-                return null;
+                throw new Exception("Error on get user.");
             }
         }
 
@@ -157,8 +142,7 @@ namespace BaseProject.Service.Services
             }
             catch (Exception e)
             {
-                AddNotification("Error on check user password.");
-                return null;
+                throw new Exception("Error on check user password.");
             }
         }
     }

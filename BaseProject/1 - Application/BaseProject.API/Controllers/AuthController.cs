@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BaseProject.API.Controllers
 {
-    
+
     public class AuthController : BaseController
     {
         private readonly IAuthService _authService;
@@ -19,7 +19,7 @@ namespace BaseProject.API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<TokenUserDTO>> Login([FromBody] LoginUserDTO login)
         {
-            return CreateResponse(_authService, await _authService.Login(login));
+            return await _authService.Login(login);
         }
     }
 }

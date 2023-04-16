@@ -7,7 +7,7 @@ using BaseProject.Domain.DTO.UserDTO;
 
 namespace BaseProject.Service.Interfaces
 {
-    public interface IAuthService : INotificationService
+    public interface IAuthService
     {
         Task<TokenUserDTO> Login(LoginUserDTO loginUserDto);
     }

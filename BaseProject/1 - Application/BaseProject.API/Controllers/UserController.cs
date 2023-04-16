@@ -18,32 +18,32 @@ namespace BaseProject.API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<UserDTO>>> Get()
         {
-            return CreateResponse(_userService, await _userService.GetAll());
+            return await _userService.GetAll();
         }
 
         [HttpGet("email")]
         public async Task<ActionResult<UserDTO>> Get(string email)
         {
-            return CreateResponse(_userService, await _userService.GetByEmail(email));
+            return await _userService.GetByEmail(email);
         }
 
         [HttpPost]
         [AllowAnonymous]
         public async Task<ActionResult<UserDTO>> Post([FromBody] CreateUserDTO userDto)
         {
-            return CreateResponse(_userService, await _userService.Add(userDto));
+            return await _userService.Add(userDto);
         }
 
         [HttpPut]
-        public async Task<ActionResult<UpdateUserDTO>> Put([FromBody] UpdateUserDTO userDto)
+        public async Task<ActionResult<UserDTO>> Put([FromBody] UpdateUserDTO userDto)
         {
-            return CreateResponse(_userService, await _userService.Update(userDto));
+            return await _userService.Update(userDto);
         }
 
         [HttpDelete("id")]
         public async Task<ActionResult<bool>> Delete(Guid id)
         {
-            return CreateResponse(_userService, await _userService.Delete(id));
+            return await _userService.Delete(id);
         }
     }
 }
