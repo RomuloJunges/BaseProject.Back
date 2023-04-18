@@ -11,10 +11,7 @@ namespace BaseProject.Domain.Mapping
             #region User
 
             CreateMap<User, UserDTO>().ReverseMap();
-            CreateMap<User, CreateUserDTO>().ReverseMap();
             CreateMap<User, LoginUserDTO>().ReverseMap();
-            CreateMap<User, UpdateUserDTO>().ReverseMap();
-            CreateMap<UserDTO, TokenUserDTO>().ReverseMap();
 
             #endregion
         }

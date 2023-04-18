@@ -17,7 +17,7 @@ namespace BaseProject.API.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult<TokenUserDTO>> Login([FromBody] LoginUserDTO login)
+        public async Task<ActionResult<UserDTO>> Login([FromBody] LoginUserDTO login)
         {
             return await _authService.Login(login);
         }

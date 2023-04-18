@@ -9,6 +9,6 @@ namespace BaseProject.Service.Interfaces
 {
     public interface IAuthService
     {
-        Task<TokenUserDTO> Login(LoginUserDTO loginUserDto);
+        Task<UserDTO> Login(LoginUserDTO loginUserDto);
     }
 }

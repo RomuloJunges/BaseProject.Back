@@ -29,6 +29,7 @@ namespace BaseProject.Service.Services
             _mapper = mapper;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["TokenKey"]));
         }
+
         public async Task<string> CreateToken(UserDTO userDto)
         {
             var user = _mapper.Map<User>(userDto);

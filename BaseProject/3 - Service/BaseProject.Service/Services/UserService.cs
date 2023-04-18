@@ -3,6 +3,8 @@ using BaseProject.Data.Interface;
 using BaseProject.Domain.DTO.UserDTO;
 using BaseProject.Domain.Identity;
 using BaseProject.Service.Interfaces;
+using BaseProject.Service.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,10 +29,13 @@ namespace BaseProject.Service.Services
             _signInManager = signInManager;
         }
 
-        public async Task<UserDTO> Add(CreateUserDTO userDto)
+        public async Task<UserDTO> Add(UserDTO userDto)
         {
             try
             {
+                UserValidator validator = new(Domain.Enum.ValidationType.Insert);
+                await validator.ValidateAndThrowAsync(userDto);
+
                 var user = _mapper.Map<User>(userDto);
                 user.UserName = user.FirstName;
                 var result = await _userManager.CreateAsync(user, userDto.Password);
@@ -44,11 +49,15 @@ namespace BaseProject.Service.Services
             }
         }
 
-        public async Task<UserDTO> Update(UpdateUserDTO userDto)
+        public async Task<UserDTO> Update(UserDTO userDto)
         {
             try
             {
+                UserValidator validator = new(Domain.Enum.ValidationType.Update);
+                await validator.ValidateAndThrowAsync(userDto);
+
                 var user = await _userRepository.GetById(userDto.Id);
+
                 if (user == null)
                     throw new Exception("Error on update user.");
 
@@ -72,7 +81,7 @@ namespace BaseProject.Service.Services
             try
             {
                 var user = await _userRepository.GetById(id);
-                if (user == null) 
+                if (user == null)
                     throw new Exception("Error on delete user.");
 
                 _userRepository.Delete<User>(user);
@@ -82,7 +91,7 @@ namespace BaseProject.Service.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error on delete user.");
+                throw new Exception($"Error on delete user. Message: {ex.Message}");
             }
         }
 
@@ -95,7 +104,7 @@ namespace BaseProject.Service.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error on get all user.");
+                throw new Exception($"Error on get all user. Message: {ex.Message}");
             }
         }
 
@@ -108,7 +117,7 @@ namespace BaseProject.Service.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error on get user.");
+                throw new Exception($"Error on get user. Message: {ex.Message}");
             }
         }
 
@@ -117,14 +126,14 @@ namespace BaseProject.Service.Services
             try
             {
                 var user = await _userRepository.GetByEmail(email);
-                if (user == null) 
+                if (user == null)
                     throw new Exception("Error on get user.");
 
                 return _mapper.Map<UserDTO>(user);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error on get user.");
+                throw new Exception($"Error on get user. Message: {ex.Message}");
             }
         }
 
@@ -135,14 +144,15 @@ namespace BaseProject.Service.Services
                 var user = await _userManager.Users.SingleOrDefaultAsync(user =>
                     user.Email.ToLower() == loginUserDto.Email.ToLower());
 
-                if (user == null) return null;
+                if (user == null)
+                    throw new Exception("Email or password invalid.");
 
                 return await _signInManager.CheckPasswordSignInAsync(user, loginUserDto.Password, false);
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new Exception("Error on check user password.");
+                throw new Exception($"Error on check user password. Message: {ex.Message}");
             }
         }
     }

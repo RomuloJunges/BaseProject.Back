@@ -29,13 +29,13 @@ namespace BaseProject.API.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult<UserDTO>> Post([FromBody] CreateUserDTO userDto)
+        public async Task<ActionResult<UserDTO>> Post([FromBody] UserDTO userDto)
         {
             return await _userService.Add(userDto);
         }
 
         [HttpPut]
-        public async Task<ActionResult<UserDTO>> Put([FromBody] UpdateUserDTO userDto)
+        public async Task<ActionResult<UserDTO>> Put([FromBody] UserDTO userDto)
         {
             return await _userService.Update(userDto);
         }

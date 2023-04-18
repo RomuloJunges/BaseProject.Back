@@ -25,7 +25,7 @@ namespace BaseProject.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<TokenUserDTO> Login(LoginUserDTO loginUserDto)
+        public async Task<UserDTO> Login(LoginUserDTO loginUserDto)
         {
             LoginValidator validator = new();
             await validator.ValidateAndThrowAsync(loginUserDto);
@@ -42,7 +42,7 @@ namespace BaseProject.Service.Services
 
             user.Token = await _tokenService.CreateToken(user);
 
-            return _mapper.Map<TokenUserDTO>(user);
+            return user;
 
         }
     }
