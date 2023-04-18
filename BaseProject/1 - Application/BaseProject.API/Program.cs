@@ -1,10 +1,11 @@
 using System.Text.Json.Serialization;
 using BaseProject.CrossCutting.Dependecy;
-using Microsoft.AspNetCore.Http.Json;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using MvcJsonOptions = Microsoft.AspNetCore.Mvc.JsonOptions;
+using FluentValidation.AspNetCore;
+using System.Reflection;
+using BaseProject.Service.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,14 @@ builder.Services.AddControllers()
         options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
         options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         options.SerializerSettings.Converters.Add(new StringEnumConverter());
+    }).AddFluentValidation(options =>
+    {
+        // Validate child properties and root collection elements
+        options.ImplicitlyValidateChildProperties = true;
+        options.ImplicitlyValidateRootCollectionElements = true;
+
+        // Automatic registration of validators in assembly
+        options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
     });
 
 builder.Services.AddRepositories();
@@ -72,6 +81,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

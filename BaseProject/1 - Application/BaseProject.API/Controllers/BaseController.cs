@@ -11,22 +11,5 @@ namespace BaseProject.API.Controllers
     [Authorize]
     public class BaseController : Controller
     {
-        private readonly DefaultResponse _response;
-
-        public BaseController()
-        {
-            _response = new DefaultResponse();
-        }
-
-        protected ActionResult CreateResponse(INotificationService notification, object data)
-        {
-            _response.Data = data;
-            _response.Success = !notification.HasNotifications;
-            _response.Messages = notification.GetNotifications();
-
-            if (!_response.Success) return BadRequest(_response);
-
-            return Ok(_response);
-        }
     }
 }

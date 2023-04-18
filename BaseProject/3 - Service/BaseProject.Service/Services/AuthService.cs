@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BaseProject.Domain.DTO.UserDTO;
 using BaseProject.Service.Interfaces;
+using BaseProject.Service.Validators;
+using FluentValidation;
 
 namespace BaseProject.Service.Services
 {
-    public class AuthService : NotificationService, IAuthService
+    public class AuthService : IAuthService
     {
         private readonly IUserService _userService;
         private readonly ITokenService _tokenService;
@@ -23,34 +25,24 @@ namespace BaseProject.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<TokenUserDTO> Login(LoginUserDTO loginUserDto)
+        public async Task<UserDTO> Login(LoginUserDTO loginUserDto)
         {
-            try
-            {
-                var user = await _userService.GetByEmail(loginUserDto.Email);
-                if (user == null)
-                {
-                    AddNotification("User or password invalid");
-                    return null;
-                }
+            LoginValidator validator = new();
+            await validator.ValidateAndThrowAsync(loginUserDto);
 
-                var result = await _userService.CheckUserPassword(loginUserDto);
-                if (!result.Succeeded)
-                {
-                    AddNotification("User or password invalid");
-                    return null;
-                }
+            var user = await _userService.GetByEmail(loginUserDto.Email);
 
-                user.Token = await _tokenService.CreateToken(user);
+            if (user == null)
+                throw new Exception("User or password invalid.");
 
-                return _mapper.Map<TokenUserDTO>(user);
+            var result = await _userService.CheckUserPassword(loginUserDto);
 
-            }
-            catch (Exception e)
-            {
-                AddNotification("Error on login");
-                return null;
-            }
+            if (!result.Succeeded)
+                throw new Exception("User or password invalid.");
+
+            user.Token = await _tokenService.CreateToken(user);
+
+            return user;
 
         }
     }
